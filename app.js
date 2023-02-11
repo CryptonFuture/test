@@ -10,5 +10,8 @@ app.use(cors())
 
 app.use('/api/v1', routers)
 
+app.get('/', (req, res) => {
+    res.send("Server is working")
+})
 
 module.exports = app
