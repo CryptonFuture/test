@@ -123,3 +123,28 @@ exports.userOtpSend = async (req, res) => {
 
     }
 }
+
+exports.Login = async (req, res) => {
+    const { email, otp } = req.body
+
+    if (!email || !otp) {
+        res.status(400).json({ success: false, message: "Please fill Out All Fields" })
+    }
+
+    try {
+        const otpverify = await Otp.findOne({ email: email })
+
+        if (otpverify.otp === otp) {
+            const user = await User.findOne({ email: email })
+
+            const token = await user.generateAuthtoken()
+            res.status(200).json({success: false, message: "User Login Successfully Done", userToken: token })
+
+        } else {
+            res.status(400).json({ success: false, error: "Invalid Otp" })
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message })
+
+    }
+}
